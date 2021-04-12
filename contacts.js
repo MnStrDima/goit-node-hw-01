@@ -1,99 +1,99 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs')
+const path = require('path')
 
-const contactsPath = path.resolve("./db/contacts.json");
+const contactsPath = path.join(__dirname, './db/contacts.json')
 
 function listContacts() {
   fs.readFile(contactsPath, (err, data) => {
     if (err) {
-      console.error(err);
+      console.error(err)
     }
-    const rawData = data.toString();
+    const rawData = data.toString()
     if (!rawData) {
-      process.exit(1);
+      process.exit(1)
     }
-    const contactsList = JSON.parse(rawData);
+    const contactsList = JSON.parse(rawData)
     if (contactsList.length === 0) {
-      console.log("Contacts list is empty!");
-      return;
+      console.log('Contacts list is empty!')
+      return
     }
-    console.table(contactsList);
-  });
+    console.table(contactsList)
+  })
 }
 
 function getContactById(contactId) {
   fs.readFile(contactsPath, (err, data) => {
     if (err) {
-      console.error(err);
+      console.error(err)
     }
-    const rawData = data.toString();
+    const rawData = data.toString()
     if (!rawData) {
-      process.exit(1);
+      process.exit(1)
     }
-    const contactsList = JSON.parse(rawData);
-    const foundContact = contactsList.find(({ id }) => id === contactId);
+    const contactsList = JSON.parse(rawData)
+    const foundContact = contactsList.find(({ id }) => id === contactId)
     if (foundContact) {
-      console.table([foundContact]);
+      console.table([foundContact])
     } else {
-      process.exit(1);
+      process.exit(1)
     }
-  });
+  })
 }
 
 function removeContact(contactId) {
   fs.readFile(contactsPath, (err, data) => {
     if (err) {
-      console.error(err.message);
+      console.error(err.message)
     }
-    const rawData = data.toString();
+    const rawData = data.toString()
     if (!rawData) {
-      process.exit(1);
+      process.exit(1)
     }
-    const contactsList = JSON.parse(rawData);
-    const filteredContacts = contactsList.filter(({ id }) => id !== contactId);
+    const contactsList = JSON.parse(rawData)
+    const filteredContacts = contactsList.filter(({ id }) => id !== contactId)
     if (contactsList.length !== filteredContacts.length) {
-      fs.writeFile(contactsPath, JSON.stringify(filteredContacts), (err) => {
+      fs.writeFile(contactsPath, JSON.stringify(filteredContacts), err => {
         if (err) {
-          console.error(err.message);
-          process.exit(1);
+          console.error(err.message)
+          process.exit(1)
         }
-      });
+      })
     }
-    console.log("Contact was deleted successfully!");
-    console.table(contactsList);
-  });
+    console.log('Contact was deleted successfully!')
+    console.table(contactsList)
+  })
 }
 
 function addContact(name, email, phone) {
   fs.readFile(contactsPath, (err, data) => {
     if (err) {
-      console.error(err);
+      console.error(err)
     }
-    const rawData = data.toString();
-    let contactsList;
-    let id;
+    const rawData = data.toString()
+    let contactsList
+    let id
     if (!rawData) {
-      contactsList = [];
-      id = 1;
+      contactsList = []
+      id = 1
     } else {
-      contactsList = JSON.parse(rawData);
+      contactsList = JSON.parse(rawData)
       id =
         contactsList.length === 0
           ? 1
-          : contactsList[contactsList.length - 1].id + 1;
+          : contactsList[contactsList.length - 1].id + 1
     }
 
     if (name && email && phone) {
-      contactsList.push({ id, name, email, phone });
-      fs.writeFile(contactsPath, JSON.stringify(contactsList), (err) => {
+      contactsList.push({ id, name, email, phone })
+      fs.writeFile(contactsPath, JSON.stringify(contactsList), err => {
         if (err) {
-          console.error(err);
+          console.error(err)
         }
-        console.log("Contact was added. Saved successfully!");
-        console.table(contactsList);
-      });
+        console.log('Contact was added. Saved successfully!')
+        console.table(contactsList)
+      })
     }
-  });
+  })
 }
 
-module.exports = { listContacts, removeContact, addContact, getContactById };
+module.exports = { listContacts, removeContact, addContact, getContactById }
